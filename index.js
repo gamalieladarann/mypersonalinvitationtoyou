@@ -1,6 +1,7 @@
-const sound = new Audio('sound.mp3');
-
-sound.play();
+document.addEventListener("click", () => {
+    const sound = new Audio("sound.mp3");
+    sound.play();
+}, { once: true });
 
 function startSequence() {
     const scene = document.getElementById('scene');
@@ -30,4 +31,5 @@ function startSequence() {
     setTimeout(() => {
         scene.classList.add('zoomed-in');
     }, 5100);
+
 }
