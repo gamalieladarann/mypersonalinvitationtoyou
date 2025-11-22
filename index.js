@@ -1,9 +1,19 @@
-const sound = new Audio("./sound.mp3");
-sound.load();
-document.addEventListener("click", () => {
-    sound.play();
-}, { once: true });
+// const sound = new Audio("./sound.mp3");
+// sound.load();
+// document.addEventListener("click", () => {
+//     sound.play();
+// }, { once: true });
 
+let music = new Audio("sound.mp3");
+music.loop = true;
+
+// user gesture ONLY unlocks audio — nothing else
+document.addEventListener("click", () => {
+    music.muted = true;
+    music.play().then(() => {
+        music.muted = false;   // music starts for real
+    });
+}, { once: true });
 
 function startSequence() {
     const scene = document.getElementById('scene');
@@ -35,4 +45,5 @@ function startSequence() {
     }, 5100);
 
 }
+
 
