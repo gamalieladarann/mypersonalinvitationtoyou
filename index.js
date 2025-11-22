@@ -1,7 +1,9 @@
+const sound = new Audio("./sound.mp3");
+sound.load();
 document.addEventListener("click", () => {
-    const sound = new Audio("sound.mp3");
     sound.play();
 }, { once: true });
+
 
 function startSequence() {
     const scene = document.getElementById('scene');
@@ -33,3 +35,4 @@ function startSequence() {
     }, 5100);
 
 }
+
