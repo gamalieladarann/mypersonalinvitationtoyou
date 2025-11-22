@@ -1,0 +1,295 @@
+:root {
+    --envelope-bg: #d6c0a0;
+    --envelope-shadow: #c5a278;
+    --paper-color: #fcfcfc;
+    --paper-back-color: #f2f0eb;
+    --tear-strip-width: 60px;
+    --letter-width: 440px;
+    --letter-height: 320px;
+    --bg-color: #2c2c2c;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: url("bg3.jpg");
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Playfair Display', serif;
+}
+
+.scene {
+    position: relative;
+    width: 600px;
+    height: 450px;
+    perspective: 2500px; 
+    transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* --- The Letter Structure --- */
+.letter-anchor {
+    position: absolute;
+    top: 50%;
+    right: 80px; 
+    width: var(--letter-width);
+    height: var(--letter-height);
+    transform: translateY(-50%);
+    z-index: 5;
+    transform-style: preserve-3d;
+}
+
+/* Main Body (The Base) */
+.main-part {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--paper-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    padding: 40px 30px;
+    border: 1px solid #e0e0e0;
+    /* Texture */
+    background-size:cover;
+    /* background-size: 20px 20px, 20px 20px; */
+    /* Start at Z=0 */
+    transform: translateZ(0px); 
+}
+
+.main-part::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("bg_letter.jpg");
+    background-size: cover;
+    opacity: 0.3; /* <-- change this number */
+    z-index: -1;
+}
+
+/* --- Flaps --- */
+.flap {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-color: var(--paper-color);
+    transform-style: preserve-3d;
+    /* Important: Transition z-index with a delay so it doesn't snap early */
+    transition: transform 1.2s ease-in-out, z-index 0s linear 1.2s;
+    border: 1px solid rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.flap-front, .flap-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.flap-front {
+    background-color: var(--paper-back-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.flap-back {
+    background-color: var(--paper-color);
+    transform: rotateX(180deg); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+/* TOP FLAP (Cover) 
+    - Hinged at Top. Points Down.
+    - Positive Rotation swings it towards screen.
+*/
+.flap-top {
+    top: 0;
+    height: 100%;
+    transform-origin: top center;
+    z-index: 10; 
+    transform: rotateX(0deg) translateZ(4px); 
+}
+
+/* BOTTOM FLAP (Inner) 
+    - Hinged at Bottom. Points Up.
+    - NEGATIVE Rotation swings it towards screen.
+*/
+.flap-bottom {
+    bottom: 0;
+    height: 75%;
+    transform-origin: bottom center;
+    z-index: 5;
+    transform: rotateX(0deg) translateZ(2px); 
+}
+
+/* --- Unfolding Animations --- */
+
+/* Open Top: Rotate +180deg (UP and Towards Viewer) */
+.open-top .flap-top {
+    transform: rotateX(180deg) translateZ(0px); 
+    z-index: 0; 
+}
+
+/* Open Bottom: Rotate -180deg (DOWN and Towards Viewer) */
+/* THIS WAS THE FIX: Changed from 180deg to -180deg */
+.open-bottom .flap-bottom {
+    transform: rotateX(-180deg) translateZ(0px);
+    z-index: 0;
+}
+
+/* --- Envelope --- */
+.envelope-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    width: 100%;
+    height: 340px;
+    z-index: 30;
+    pointer-events: none;
+}
+
+.envelope-left {
+    position: absolute;
+    left: 0;
+    width: calc(100% - var(--tear-strip-width));
+    height: 100%;
+    background-color: var(--envelope-bg);
+    border-radius: 4px 0 0 4px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    z-index: 30;
+    transition: transform 1s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+    pointer-events: auto;
+}
+
+#text_one {
+    width: 300px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    top: 150px;     /* move up/down */
+    left: 0px;      /* move left/right */
+    transform: rotate(-3deg); /* optional cute tilt */
+}
+
+#img_one {
+    width: 250px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    bottom: 20px;     /* move up/down */
+    right: 40px;      /* move left/right */
+    transform: rotate(-3deg); /* optional cute tilt */
+}
+
+#img_two {
+    width: 100px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    top: 10px;     /* move up/down */
+    right: 40px;      /* move left/right */
+    transform: rotate(10deg); /* optional cute tilt */
+}
+
+#img_three {
+    width: 100px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    bottom: 10px;     /* move up/down */
+    left: 40px;      /* move left/right */
+    transform: rotate(-10deg); /* optional cute tilt */
+}
+
+#img_four {
+    width: 80px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    bottom: 10px;     /* move up/down */
+    right: 10px;      /* move left/right */
+    transform: rotate(5deg); /* optional cute tilt */
+}
+
+#img_five {
+    width: 100px;     /* adjust size */
+    height: auto;     /* keeps proportions */
+    position: absolute;
+    top: 20px;     /* move up/down */
+    left: 20px;      /* move left/right */
+    transform: rotate(-5deg); /* optional cute tilt */
+}
+
+
+.tear-strip {
+    position: absolute;
+    right: 0;
+    width: var(--tear-strip-width);
+    height: 100%;
+    background-color: var(--envelope-shadow);
+    cursor: pointer;
+    z-index: 31;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.tear-strip:hover { background-color: #b59165; }
+
+.rip-animation { animation: ripOff 0.6s forwards ease-in; pointer-events: none; }
+@keyframes ripOff {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(200px) rotate(45deg); opacity: 0; }
+}
+
+.slide-left { transform: translateX(-200%); }
+.zoomed-in { transform: scale(1.3); }
+
+/* Typography */
+.handwriting { font-family: 'Dancing Script', cursive; color: #444; }
+h2 { letter-spacing: 2px; font-size: 1.8rem; margin-top: 10px; color: #222; }
+p { font-size: 1rem; color: #555; margin-bottom: 5px; line-height: 1.6; }
+
+.btn-rsvp {
+    border: 1px solid #333;
+    background: transparent;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Playfair Display', serif;
+}
+.btn-rsvp:hover { background: #333; color: #fff; }
+
+.wax-seal {
+    width: 70px;
+    height: 70px;
+    background-color: #a83232;
+    border-radius: 50%;
+    border: 3px double #7a1f1f;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
